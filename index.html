@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>中医古籍典藏 - TCM Ancient Books Collection</title>
+    <link href="https://fonts.googleapis.cnpmjs.org/css2?family=Noto+Serif+SC:wght@400;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #654321;
+            --bg-paper: #FDF5E6;
+            --bg-dark: #2C1810;
+            --text-main: #3D2914;
+            --text-light: #8B7355;
+            --border: #D4A574;
+            --accent: #C41E3A;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', 'Songti SC', 'STSong', 'SimSun', 'Source Han Serif SC', serif;
+            background: linear-gradient(135deg, #FDF5E6 0%, #F5E6D3 100%);
+            min-height: 100vh;
+            color: var(--text-main);
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #3D2914 100%);
+            color: #FDF5E6;
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 5 L55 30 L30 55 L5 30 Z' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 8px;
+        }
+
+        /* DateTime and Counter */
+        .header-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .datetime-display,
+        .counter-display {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .datetime-display {
+            font-size: 0.95rem;
+            color: #FDF5E6;
+        }
+
+        .datetime-icon,
+        .counter-icon {
+            font-size: 1.2rem;
+        }
+
+        .datetime-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
+
+        .date-part {
+            font-weight: 600;
+        }
+
+        .time-part {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .counter-display {
+            font-size: 0.95rem;
+            color: #FDF5E6;
+        }
+
+        .counter-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: var(--border);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+
+        .header .desc {
+            font-size: 0.95rem;
+            color: #C4A77D;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.8;
+        }
+
+        .editor-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(196, 167, 125, 0.2);
+            border: 1px solid rgba(196, 167, 125, 0.4);
+            border-radius: 25px;
+            color: #C4A77D;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .editor-link:hover {
+            background: rgba(196, 167, 125, 0.3);
+            border-color: #C4A77D;
+            color: #FDF5E6;
+        }
+
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            padding: 30px;
+            background: #fff;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+
+        /* Search */
+        .search-section {
+            padding: 40px 20px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+            background: var(--bg-paper);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(139, 69, 19, 0.2);
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .search-box button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Categories */
+        .categories {
+            background: linear-gradient(180deg, #FDF5E6 0%, #FFF 100%);
+            padding: 40px 20px;
+        }
+
+        .categories-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .categories-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .categories-title h2::before,
+        .categories-title h2::after {
+            content: '◆';
+            color: var(--accent);
+            margin: 0 15px;
+            font-size: 0.8rem;
+        }
+
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-btn {
+            padding: 10px 25px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            color: var(--text-main);
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Books Grid */
+        .books-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .books-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .books-title h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .book-card {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .book-content {
+            padding: 25px;
+        }
+
+        .book-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .book-category {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-edit {
+            background: transparent;
+            color: #2E7D32;
+            border: 1px solid #2E7D32;
+        }
+
+        .btn-edit:hover {
+            background: #2E7D32;
+            color: white;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 40px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-dark);
+            color: #C4A77D;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #C4A77D;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(196, 167, 125, 0.3);
+            font-size: 0.85rem;
+        }
+
+        /* Donation Section */
+        .donation-section {
+            margin-top: 40px;
+            padding-top: 35px;
+            border-top: 1px solid rgba(196, 167, 125, 0.3);
+        }
+
+        .donation-section h3 {
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #F5E6D3;
+        }
+
+        .donation-section > p {
+            font-size: 0.9rem;
+            color: #C4A77D;
+            margin-bottom: 20px;
+        }
+
+        .wechat-qr-container {
+            display: inline-block;
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
+        }
+
+        .wechat-qr-container img {
+            display: block;
+            width: 180px;
+            height: 180px;
+            border-radius: 6px;
+        }
+
+        .wechat-tip {
+            font-size: 0.82rem;
+            color: #9B8969;
+            margin-top: 8px;
+            margin-bottom: 30px;
+        }
+
+        .donor-list-title {
+            font-family: 'Ma Shan Zheng', 'STKaiti', 'KaiTi', 'Kaiti SC', cursive;
+            font-size: 1.3rem;
+            color: #F5E6D3;
+            margin-bottom: 15px;
+        }
+
+        .donor-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .donor-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(196, 167, 125, 0.15);
+            border: 1px solid rgba(196, 167, 125, 0.25);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #D4B896;
+            transition: all 0.3s;
+        }
+
+        .donor-tag:hover {
+            background: rgba(196, 167, 125, 0.25);
+            border-color: rgba(196, 167, 125, 0.4);
+        }
+
+        .donor-tag .donor-icon {
+            font-size: 0.75rem;
+        }
+
+        .donor-tag .donor-date {
+            font-size: 0.75rem;
+            color: #9B8969;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 35px 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+
+            .header .subtitle {
+                font-size: 0.85rem;
+                letter-spacing: 2px;
+            }
+
+            .header .desc {
+                font-size: 0.82rem;
+                line-height: 1.6;
+            }
+
+            .header-info {
+                gap: 15px;
+            }
+
+            .datetime-display,
+            .counter-display {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+
+            .datetime-icon,
+            .counter-icon {
+                font-size: 1rem;
+            }
+
+            .counter-number {
+                font-size: 1rem;
+            }
+
+            .stats-bar {
+                gap: 20px;
+                padding: 20px 10px;
+            }
+
+            .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .stat-label {
+                font-size: 0.78rem;
+            }
+
+            .search-section {
+                padding: 20px 15px;
+            }
+
+            .search-box input {
+                padding: 14px 50px 14px 18px;
+                font-size: 0.95rem;
+            }
+
+            .search-box button {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .categories {
+                padding: 25px 10px;
+            }
+
+            .categories-title h2 {
+                font-size: 1.3rem;
+            }
+
+            .category-btn {
+                padding: 7px 15px;
+                font-size: 0.82rem;
+            }
+
+            .books-container {
+                padding: 20px 10px;
+            }
+
+            .books-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .book-content {
+                padding: 18px;
+            }
+
+            .book-title {
+                font-size: 1rem;
+            }
+
+            .pagination {
+                padding: 20px 10px;
+                gap: 6px;
+            }
+
+            .page-btn {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
+
+            .footer {
+                padding: 30px 15px;
+            }
+
+            .footer h3 {
+                font-size: 1.2rem;
+            }
+
+            .footer p {
+                font-size: 0.82rem;
+            }
+
+            .footer-links {
+                gap: 15px;
+                font-size: 0.85rem;
+            }
+
+            .donation-section h3 {
+                font-size: 1.2rem;
+            }
+
+            .wechat-qr-container {
+                padding: 8px;
+            }
+
+            .wechat-qr-container img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .donor-grid {
+                gap: 8px;
+            }
+
+            .donor-tag {
+                padding: 5px 12px;
+                font-size: 0.78rem;
+            }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-light);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-light);
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Server Notice */
+        .server-notice {
+            background: #FFF3E0;
+            border-left: 4px solid #F57C00;
+            padding: 15px 20px;
+            margin: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .server-notice.show {
+            display: block;
+        }
+
+        .server-notice h4 {
+            color: #E65100;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .server-notice p {
+            color: #5D4037;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .server-notice code {
+            background: #FFE0B2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Guestbook Modal */
+        .guestbook-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .guestbook-modal.show {
+            display: flex;
+        }
+
+        .guestbook-container {
+            background: linear-gradient(135deg, #FDF5E6 0%, #F5E6D3 100%);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .guestbook-header {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, #3D2914 100%);
+            color: #FDF5E6;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guestbook-header h2 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .guestbook-close {
+            background: none;
+            border: none;
+            color: #C4A77D;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .guestbook-close:hover {
+            background: rgba(196, 167, 125, 0.2);
+            color: #FDF5E6;
+        }
+
+        .guestbook-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .guestbook-form {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .guestbook-form h3 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+
+        .messages-section h3 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .message-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .message-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #F0E6D2;
+        }
+
+        .message-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .message-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .message-contact {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .message-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .message-content {
+            color: var(--text-main);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .no-messages {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .no-messages svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .guestbook-container {
+                max-width: 100%;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1>中医古籍典藏</h1>
+            <p class="subtitle">TCM ANCIENT BOOKS COLLECTION</p>
+            <p class="desc">
+                汇集历代中医经典著作，传承千年医学智慧<br>
+                探寻中华传统医学的瑰宝与精华
+            </p>
+            <a href="editor.html" class="editor-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                TXT编辑器
+            </a>
+            
+            <!-- DateTime and Counter -->
+            <div class="header-info">
+                <div class="datetime-display">
+                    <span class="datetime-icon">🕐</span>
+                    <div class="datetime-text">
+                        <span class="date-part" id="currentDate">2026年03月17日</span>
+                        <span class="time-part" id="currentTime">星期二 09:30:45</span>
+                    </div>
+                </div>
+                <div class="counter-display">
+                    <span class="counter-icon">👁️</span>
+                    <span>访问量：<span class="counter-number" id="visitCounter">0</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Server Notice -->
+    <div class="server-notice" id="serverNotice">
+        <h4>⚠️ 重要提示</h4>
+        <p>
+            检测到您可能通过 file:// 协议打开本页面。为确保编辑器功能正常使用，请通过本地HTTP服务器运行：<br>
+            <code>cd /Volumes/PSSD/TCM-Ancient-Books && python3 -m http.server 8000</code><br>
+            然后访问：<code>http://localhost:8000/index.html</code>
+        </p>
+    </div>
+
+    <section class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number" id="totalBooks">700+</div>
+            <div class="stat-label">典藏古籍</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">医学门类</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">2000+</div>
+            <div class="stat-label">年历史传承</div>
+        </div>
+    </section>
+
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索古籍名称...">
+            <button onclick="searchBooks()">🔍</button>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="categories-title">
+            <h2>典籍分类</h2>
+        </div>
+        <div class="category-filters" id="categoryFilters">
+            <button class="category-btn active" onclick="filterByCategory('all')">全部</button>
+            <button class="category-btn" onclick="filterByCategory('本草')">本草类</button>
+            <button class="category-btn" onclick="filterByCategory('伤寒')">伤寒类</button>
+            <button class="category-btn" onclick="filterByCategory('金匮')">金匮类</button>
+            <button class="category-btn" onclick="filterByCategory('内经')">内经类</button>
+            <button class="category-btn" onclick="filterByCategory('方书')">方书类</button>
+            <button class="category-btn" onclick="filterByCategory('女科')">女科类</button>
+            <button class="category-btn" onclick="filterByCategory('儿科')">儿科类</button>
+            <button class="category-btn" onclick="filterByCategory('外科')">外科类</button>
+            <button class="category-btn" onclick="filterByCategory('针灸')">针灸类</button>
+            <button class="category-btn" onclick="filterByCategory('医案')">医案类</button>
+            <button class="category-btn" onclick="filterByCategory('医论')">医论类</button>
+        </div>
+    </section>
+
+    <section class="books-container">
+        <div class="books-title">
+            <h2>古籍目录</h2>
+        </div>
+        <div class="books-grid" id="booksGrid">
+            <!-- Books will be generated here -->
+        </div>
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be generated here -->
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>传承国粹 仁心仁术</h3>
+            <p>
+                本典藏收录历代中医珍贵文献，旨在弘扬中华传统医学文化，<br>
+                为中医研究者和爱好者提供便捷的学习资料。
+            </p>
+            <div class="footer-links">
+                <a href="#" onclick="showGuestbook(); return false;">📝 留言板</a>
+                <a href="#">使用说明</a>
+            </div>
+            <!-- 微信收款 & 捐助人列表 -->
+            <div class="donation-section">
+                <h3>支持本项目</h3>
+                <p>如果本站对您有帮助，欢迎扫码捐助，助力中医古籍的整理与传承</p>
+                <div class="wechat-qr-container">
+                    <img src="wechat-pay.png" alt="微信收款码">
+                </div>
+                <p class="wechat-tip">打开微信扫一扫，任意金额皆是支持</p>
+
+                <div class="donor-list-title">捐助人鸣谢</div>
+                <div class="donor-grid">
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 张仲景后人 <span class="donor-date">2025-03</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 杏林春暖 <span class="donor-date">2025-02</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 悬壶济世 <span class="donor-date">2025-02</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 岐黄传人 <span class="donor-date">2025-01</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 本草爱好者 <span class="donor-date">2025-01</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 中医学子 <span class="donor-date">2024-12</span></span>
+                    <span class="donor-tag"><span class="donor-icon">&#9734;</span> 匿名善心人 <span class="donor-date">2024-12</span></span>
+                    <!-- 新增捐助人请在此处添加 -->
+                </div>
+            </div>
+
+            <div class="copyright">
+                &copy; 2024 TCM Ancient Books Collection. 中医古籍典藏
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Book data
+        const booksData = [
+            {num: 0, name: "神农本草经", category: "本草"},
+            {num: 1, name: "吴普本草", category: "本草"},
+            {num: 2, name: "本草经集注", category: "本草"},
+            {num: 3, name: "新修本草", category: "本草"},
+            {num: 4, name: "食疗本草", category: "本草"},
+            {num: 5, name: "海药本草", category: "本草"},
+            {num: 6, name: "本草图经", category: "本草"},
+            {num: 7, name: "本草衍义", category: "本草"},
+            {num: 8, name: "汤液本草", category: "本草"},
+            {num: 9, name: "饮膳正要", category: "本草"},
+            {num: 10, name: "滇南本草", category: "本草"},
+            {num: 11, name: "本草品汇精要", category: "本草"},
+            {num: 12, name: "本草蒙筌", category: "本草"},
+            {num: 13, name: "本草纲目", category: "本草"},
+            {num: 14, name: "本草乘雅半偈", category: "本草"},
+            {num: 15, name: "本草征要", category: "本草"},
+            {num: 16, name: "本草易读", category: "本草"},
+            {num: 17, name: "本草新编", category: "本草"},
+            {num: 18, name: "本草备要", category: "本草"},
+            {num: 19, name: "本经逢原", category: "本草"},
+            {num: 20, name: "本草经解", category: "本草"},
+            {num: 21, name: "本草从新", category: "本草"},
+            {num: 22, name: "神农本草经百种录", category: "本草"},
+            {num: 23, name: "本草纲目拾遗", category: "本草"},
+            {num: 24, name: "本草崇原", category: "本草"},
+            {num: 25, name: "本草求真", category: "本草"},
+            {num: 26, name: "神农本草经读", category: "本草"},
+            {num: 27, name: "本草述钩元", category: "本草"},
+            {num: 28, name: "食鉴本草", category: "本草"},
+            {num: 29, name: "本草思辨录", category: "本草"},
+            {num: 30, name: "本草纲目别名录", category: "本草"},
+            {num: 31, name: "本草便读", category: "本草"},
+            {num: 32, name: "本草撮要", category: "本草"},
+            {num: 33, name: "本草问答", category: "本草"},
+            {num: 34, name: "神农本草经赞", category: "本草"},
+            {num: 35, name: "本草择要纲目", category: "本草"},
+            {num: 36, name: "得配本草", category: "本草"},
+            {num: 37, name: "本草害利", category: "本草"},
+            {num: 38, name: "本草分经", category: "本草"},
+            {num: 39, name: "雷公炮炙论", category: "本草"},
+            {num: 40, name: "炮炙全书", category: "本草"},
+            {num: 41, name: "炮炙大法", category: "本草"},
+            {num: 42, name: "雷公炮制药性解", category: "本草"},
+            {num: 43, name: "濒湖炮炙法", category: "本草"},
+            {num: 44, name: "要药分剂", category: "本草"},
+            {num: 45, name: "珍珠囊补遗药性赋", category: "本草"},
+            {num: 46, name: "药鉴", category: "本草"},
+            {num: 47, name: "药征", category: "本草"},
+            {num: 48, name: "思考中医", category: "医论"},
+            {num: 49, name: "五十二病方", category: "方书"},
+            {num: 50, name: "名医别录", category: "本草"},
+            {num: 51, name: "千金翼方", category: "方书"},
+            {num: 52, name: "孙真人海上方", category: "方书"},
+            {num: 53, name: "外台秘要", category: "方书"},
+            {num: 54, name: "医心方", category: "方书"},
+            {num: 55, name: "太平圣惠方", category: "方书"},
+            {num: 56, name: "苏沈良方", category: "方书"},
+            {num: 57, name: "博济方", category: "方书"},
+            {num: 58, name: "史载之方", category: "方书"},
+            {num: 59, name: "太平惠民和剂局方", category: "方书"},
+            {num: 60, name: "圣济总录", category: "方书"},
+            {num: 61, name: "鸡峰普济方", category: "方书"},
+            {num: 62, name: "洪氏集验方", category: "方书"},
+            {num: 63, name: "杨氏家藏方", category: "方书"},
+            {num: 64, name: "千金宝要", category: "方书"},
+            {num: 65, name: "卫生易简方", category: "方书"},
+            {num: 66, name: "全生指迷方", category: "方书"},
+            {num: 67, name: "仁斋直指方论", category: "方书"},
+            {num: 68, name: "瑞竹堂经验方", category: "方书"},
+            {num: 69, name: "世医得效方", category: "方书"},
+            {num: 70, name: "奇效良方", category: "方书"},
+            {num: 71, name: "医方集宜", category: "方书"},
+            {num: 72, name: "医方考", category: "方书"},
+            {num: 73, name: "增广和剂局方药性总论", category: "方书"},
+            {num: 74, name: "普济方", category: "方书"},
+            {num: 75, name: "肘后备急方", category: "方书"},
+            {num: 76, name: "普济本事方", category: "方书"},
+            {num: 77, name: "严氏济生方", category: "方书"},
+            {num: 78, name: "药征续编", category: "本草"},
+            {num: 79, name: "仁术便览", category: "方书"},
+            {num: 80, name: "中医之钥", category: "医论"},
+            {num: 81, name: "祖剂", category: "方书"},
+            {num: 82, name: "古今名医方论", category: "方书"},
+            {num: 83, name: "种福堂公选良方", category: "方书"},
+            {num: 84, name: "汤头歌诀", category: "方书"},
+            {num: 85, name: "急救便方", category: "方书"},
+            {num: 86, name: "奇方类编", category: "方书"},
+            {num: 87, name: "医方集解", category: "方书"},
+            {num: 88, name: "绛雪园古方选注", category: "方书"},
+            {num: 89, name: "医方论", category: "方书"},
+            {num: 90, name: "串雅内外编", category: "方书"},
+            {num: 91, name: "成方切用", category: "方书"},
+            {num: 92, name: "时方妙用", category: "方书"},
+            {num: 93, name: "时方歌括", category: "方书"},
+            {num: 94, name: "长沙方歌括", category: "方书"},
+            {num: 95, name: "金匮方歌括", category: "方书"},
+            {num: 96, name: "医方证治汇编歌诀", category: "方书"},
+            {num: 97, name: "验方新编", category: "方书"},
+            {num: 98, name: "十剂表", category: "方书"},
+            {num: 99, name: "经验丹方汇编", category: "方书"},
+            {num: 100, name: "桂林古本伤寒杂病论", category: "伤寒"},
+            {num: 101, name: "药性切用", category: "本草"},
+            {num: 102, name: "退思集类方歌注", category: "方书"},
+            {num: 103, name: "华佗神方", category: "方书"},
+            {num: 104, name: "集验方", category: "方书"},
+            {num: 105, name: "大小诸证方论", category: "方书"},
+            {num: 106, name: "奇效简便良方", category: "方书"},
+            {num: 107, name: "神仙济世良方", category: "方书"},
+            {num: 108, name: "是斋百一选方", category: "方书"},
+            {num: 109, name: "小品方", category: "方书"},
+            {num: 110, name: "惠直堂经验方", category: "方书"},
+            {num: 111, name: "绛囊撮要", category: "方书"},
+            {num: 112, name: "经验奇方", category: "方书"},
+            {num: 113, name: "古方汇精", category: "方书"},
+            {num: 114, name: "外治寿世方", category: "方书"},
+            {num: 115, name: "文堂集验方", category: "方书"},
+            {num: 116, name: "回生集", category: "方书"},
+            {num: 117, name: "本草简要方", category: "本草"},
+            {num: 118, name: "增订医方歌诀", category: "方书"},
+            {num: 119, name: "济世神验良方", category: "方书"},
+            {num: 120, name: "伤寒恒论", category: "伤寒"},
+            {num: 121, name: "医方歌括", category: "方书"},
+            {num: 122, name: "医方简义", category: "方书"},
+            {num: 123, name: "女科切要", category: "女科"},
+            {num: 124, name: "傅青主女科歌括", category: "女科"},
+            {num: 125, name: "产宝", category: "女科"},
+            {num: 126, name: "女科百问", category: "女科"},
+            {num: 127, name: "钱氏秘传产科方书名试验录", category: "女科"},
+            {num: 128, name: "妇人大全良方", category: "女科"},
+            {num: 129, name: "沈氏女科辑要", category: "女科"},
+            {num: 130, name: "济生集", category: "女科"},
+            {num: 131, name: "婴童百问", category: "儿科"},
+            {num: 132, name: "女科证治准绳", category: "女科"},
+            {num: 133, name: "小儿药证直诀", category: "儿科"},
+            {num: 134, name: "幼科切要", category: "儿科"},
+            {num: 135, name: "婴儿论", category: "儿科"},
+            {num: 136, name: "活幼心书", category: "儿科"},
+            {num: 137, name: "儿科要略", category: "儿科"},
+            {num: 138, name: "儿科萃精", category: "儿科"},
+            {num: 139, name: "痧疹辑要", category: "儿科"},
+            {num: 140, name: "小儿推拿广意", category: "儿科"},
+            {num: 141, name: "幼科证治准绳", category: "儿科"},
+            {num: 142, name: "女科旨要", category: "女科"},
+            {num: 143, name: "女科折衷纂要", category: "女科"},
+            {num: 144, name: "女科指要", category: "女科"},
+            {num: 145, name: "女科指掌", category: "女科"},
+            {num: 146, name: "女科要旨", category: "女科"},
+            {num: 147, name: "女科秘旨", category: "女科"},
+            {num: 148, name: "女科秘要", category: "女科"},
+            {num: 149, name: "女科经纶", category: "女科"},
+            {num: 150, name: "女科精要", category: "女科"},
+            {num: 151, name: "女科撮要", category: "女科"},
+            {num: 152, name: "小儿痘疹方论", category: "儿科"},
+            {num: 153, name: "小儿卫生总微论方", category: "儿科"},
+            {num: 154, name: "内府秘传经验女科", category: "女科"},
+            {num: 155, name: "幼幼集成", category: "儿科"},
+            {num: 156, name: "幼幼新书", category: "儿科"},
+            {num: 157, name: "幼科心法要诀", category: "儿科"},
+            {num: 158, name: "幼科折衷", category: "儿科"},
+            {num: 159, name: "幼科指南", category: "儿科"},
+            {num: 160, name: "幼科推拿秘书", category: "儿科"},
+            {num: 161, name: "幼科发挥", category: "儿科"},
+            {num: 162, name: "幼科概论", category: "儿科"},
+            {num: 163, name: "幼科类萃", category: "儿科"},
+            {num: 164, name: "幼科铁镜", category: "儿科"},
+            {num: 165, name: "竹泉生女科集要", category: "女科"},
+            {num: 166, name: "儿科醒", category: "儿科"},
+            {num: 167, name: "保幼新编", category: "儿科"},
+            {num: 168, name: "保婴撮要", category: "儿科"},
+            {num: 169, name: "活幼口议", category: "儿科"},
+            {num: 170, name: "胎产心法", category: "女科"},
+            {num: 171, name: "胎产指南", category: "女科"},
+            {num: 172, name: "胎产秘书", category: "女科"},
+            {num: 173, name: "家传女科经验摘奇", category: "女科"},
+            {num: 174, name: "妇人规", category: "女科"},
+            {num: 175, name: "妇科心法要诀", category: "女科"},
+            {num: 176, name: "妇科秘方", category: "女科"},
+            {num: 177, name: "妇科秘书", category: "女科"},
+            {num: 178, name: "妇科问答", category: "女科"},
+            {num: 179, name: "专治麻痧初编", category: "儿科"},
+            {num: 180, name: "张氏妇科", category: "女科"},
+            {num: 181, name: "产鉴", category: "女科"},
+            {num: 182, name: "陈氏幼科秘诀", category: "儿科"},
+            {num: 183, name: "麻科活人全书", category: "儿科"},
+            {num: 184, name: "麻疹备要方论", category: "儿科"},
+            {num: 185, name: "麻疹阐注", category: "儿科"},
+            {num: 186, name: "痘疹心法要诀", category: "儿科"},
+            {num: 187, name: "评注产科心法", category: "女科"},
+            {num: 188, name: "慈幼便览", category: "儿科"},
+            {num: 189, name: "慈幼新书", category: "儿科"},
+            {num: 190, name: "毓麟验方", category: "女科"},
+            {num: 191, name: "经验麻科", category: "儿科"},
+            {num: 192, name: "达生编", category: "女科"},
+            {num: 193, name: "盘珠集胎产症治", category: "女科"},
+            {num: 194, name: "竹林女科证治", category: "女科"},
+            {num: 195, name: "原要论", category: "女科"},
+            {num: 196, name: "产后十八论", category: "女科"},
+            {num: 197, name: "脚气治法总要", category: "外科"},
+            {num: 198, name: "济阴纲目", category: "女科"},
+            {num: 199, name: "卫生家宝产科备要", category: "女科"},
+            {num: 200, name: "邯郸遗稿", category: "女科"},
+            {num: 201, name: "鬻婴提要说", category: "儿科"},
+            {num: 202, name: "颅囟经", category: "儿科"},
+            {num: 203, name: "婴童类萃", category: "儿科"},
+            {num: 204, name: "医林改错", category: "医论"},
+            {num: 205, name: "金匮翼", category: "金匮"},
+            {num: 206, name: "养老奉亲书", category: "医论"},
+            {num: 207, name: "医门法律", category: "医论"},
+            {num: 208, name: "笔花医镜", category: "医论"},
+            {num: 209, name: "血证论", category: "医论"},
+            {num: 210, name: "外科精义", category: "外科"},
+            {num: 211, name: "立斋外科发挥", category: "外科"},
+            {num: 212, name: "外科枢要", category: "外科"},
+            {num: 213, name: "杂病心法要诀", category: "医论"},
+            {num: 214, name: "跌损妙方", category: "外科"},
+            {num: 215, name: "杂病广要", category: "医论"},
+            {num: 216, name: "江氏伤科学", category: "外科"},
+            {num: 217, name: "伤科大成", category: "外科"},
+            {num: 218, name: "跌打秘方", category: "外科"},
+            {num: 219, name: "跌打损伤方", category: "外科"},
+            {num: 220, name: "外科集验方", category: "外科"},
+            {num: 221, name: "余无言", category: "医论"},
+            {num: 222, name: "跌打损伤回生集", category: "外科"},
+            {num: 223, name: "疡医大全", category: "外科"},
+            {num: 224, name: "傅青主男科重编考释", category: "医论"},
+            {num: 225, name: "疡科心得集", category: "外科"},
+            {num: 226, name: "外科大成", category: "外科"},
+            {num: 227, name: "阴证略例", category: "伤寒"},
+            {num: 228, name: "发背对口治诀论", category: "外科"},
+            {num: 229, name: "集验背疽方", category: "外科"},
+            {num: 230, name: "外科正宗", category: "外科"},
+            {num: 231, name: "中风论", category: "医论"},
+            {num: 232, name: "内外伤辨", category: "医论"},
+            {num: 233, name: "内科摘要", category: "医论"},
+            {num: 234, name: "少林真传伤科秘方", category: "外科"},
+            {num: 235, name: "仙授理伤续断秘方", category: "外科"},
+            {num: 236, name: "外科十三方考", category: "外科"},
+            {num: 237, name: "外科心法要诀", category: "外科"},
+            {num: 238, name: "外科方外奇方", category: "外科"},
+            {num: 239, name: "外科全生集", category: "外科"},
+            {num: 240, name: "外科启玄", category: "外科"},
+            {num: 241, name: "外科理例", category: "外科"},
+            {num: 242, name: "外科传薪集", category: "外科"},
+            {num: 243, name: "外科精要", category: "外科"},
+            {num: 244, name: "外科选要", category: "外科"},
+            {num: 245, name: "外科医镜", category: "外科"},
+            {num: 246, name: "正骨心法要旨", category: "外科"},
+            {num: 247, name: "正体类要", category: "外科"},
+            {num: 248, name: "何氏虚劳心传", category: "医论"},
+            {num: 249, name: "周慎斋遗书", category: "医论"},
+            {num: 250, name: "奇经八脉考", category: "医论"},
+            {num: 251, name: "金疮秘传禁方", category: "外科"},
+            {num: 252, name: "金疮跌打接骨药性秘书", category: "外科"},
+            {num: 253, name: "青囊秘诀", category: "外科"},
+            {num: 254, name: "急救良方", category: "方书"},
+            {num: 255, name: "急救广生集", category: "方书"},
+            {num: 256, name: "订正太素脉秘诀", category: "医论"},
+            {num: 257, name: "症因脉治", category: "医论"},
+            {num: 258, name: "秘传外科方", category: "外科"},
+            {num: 259, name: "秘传刘伯温家藏接骨金疮禁方", category: "外科"},
+            {num: 260, name: "脉症治方", category: "医论"},
+            {num: 261, name: "脉确", category: "医论"},
+            {num: 262, name: "接骨手法", category: "外科"},
+            {num: 263, name: "救伤秘旨", category: "外科"},
+            {num: 264, name: "理虚元鉴", category: "医论"},
+            {num: 265, name: "虚损启微", category: "医论"},
+            {num: 266, name: "诊脉三十二辨", category: "医论"},
+            {num: 267, name: "伤科方书", category: "外科"},
+            {num: 268, name: "伤科汇纂", category: "外科"},
+            {num: 269, name: "伤科补要", category: "外科"},
+            {num: 270, name: "慎柔五书", category: "医论"},
+            {num: 271, name: "杨成博先生遗留穴道秘书", category: "针灸"},
+            {num: 272, name: "痰火点雪", category: "医论"},
+            {num: 273, name: "万氏秘传外科心法", category: "外科"},
+            {num: 274, name: "解围元薮", category: "外科"},
+            {num: 275, name: "刘涓子鬼遗方", category: "外科"},
+            {num: 276, name: "疯门全书", category: "外科"},
+            {num: 277, name: "医略", category: "医论"},
+            {num: 278, name: "增订十药神书", category: "医论"},
+            {num: 279, name: "疠疡机要", category: "外科"},
+            {num: 280, name: "医学从众录", category: "医论"},
+            {num: 281, name: "疡科纲要", category: "外科"},
+            {num: 282, name: "医门补要", category: "医论"},
+            {num: 283, name: "医源", category: "医论"},
+            {num: 284, name: "仙传外科集验方", category: "外科"},
+            {num: 285, name: "外科十法", category: "外科"},
+            {num: 286, name: "脉诀乳海", category: "医论"},
+            {num: 287, name: "脉诀考证", category: "医论"},
+            {num: 288, name: "痰疠法门", category: "外科"},
+            {num: 289, name: "证治汇补", category: "医论"},
+            {num: 290, name: "外科证治全书", category: "外科"},
+            {num: 291, name: "眼科秘诀", category: "眼科"},
+            {num: 292, name: "银海精微", category: "眼科"},
+            {num: 293, name: "审视瑶函", category: "眼科"},
+            {num: 294, name: "目经大成", category: "眼科"},
+            {num: 295, name: "针灸大全", category: "针灸"},
+            {num: 296, name: "扁鹊神应针灸玉龙经", category: "针灸"},
+            {num: 297, name: "针灸易学", category: "针灸"},
+            {num: 298, name: "针灸聚英", category: "针灸"},
+            {num: 299, name: "针灸大成", category: "针灸"},
+            {num: 300, name: "针灸逢源", category: "针灸"},
+            {num: 301, name: "针灸甲乙经", category: "针灸"},
+            {num: 302, name: "针经节要", category: "针灸"},
+            {num: 303, name: "李翰卿", category: "医论"},
+            {num: 304, name: "杨敬斋针灸全书", category: "针灸"},
+            {num: 305, name: "宋本备急灸法", category: "针灸"},
+            {num: 306, name: "刺灸心法要诀", category: "针灸"},
+            {num: 307, name: "一草亭目科全书", category: "眼科"},
+            {num: 308, name: "口齿类要", category: "眼科"},
+            {num: 309, name: "子午流注针经", category: "针灸"},
+            {num: 310, name: "子午流注说难", category: "针灸"},
+            {num: 311, name: "尤氏喉科秘书", category: "眼科"},
+            {num: 312, name: "尤氏喉症指南", category: "眼科"},
+            {num: 313, name: "白喉全生集", category: "眼科"},
+            {num: 314, name: "白喉条辨", category: "眼科"},
+            {num: 315, name: "银海指南", category: "眼科"},
+            {num: 316, name: "普济方·针灸", category: "针灸"},
+            {num: 317, name: "灸法秘传", category: "针灸"},
+            {num: 318, name: "走马急疳真方", category: "眼科"},
+            {num: 319, name: "明目至宝", category: "眼科"},
+            {num: 320, name: "金针秘传", category: "眼科"},
+            {num: 321, name: "灵药秘方", category: "眼科"},
+            {num: 322, name: "重订囊秘喉书", category: "眼科"},
+            {num: 323, name: "重楼玉钥", category: "眼科"},
+            {num: 324, name: "重楼玉钥续编", category: "眼科"},
+            {num: 325, name: "原机启微", category: "眼科"},
+            {num: 326, name: "神灸经纶", category: "针灸"},
+            {num: 327, name: "神应经", category: "针灸"},
+            {num: 328, name: "秘传眼科龙木论", category: "眼科"},
+            {num: 329, name: "针灸神书", category: "针灸"},
+            {num: 330, name: "针灸素难要旨", category: "针灸"},
+            {num: 331, name: "针灸问对", category: "针灸"},
+            {num: 332, name: "针灸集成", category: "针灸"},
+            {num: 333, name: "针灸资生经", category: "针灸"},
+            {num: 334, name: "针经指南", category: "针灸"},
+            {num: 335, name: "巢氏病源补养宣导法", category: "医论"},
+            {num: 336, name: "推拿抉微", category: "眼科"},
+            {num: 337, name: "理瀹骈文", category: "医论"},
+            {num: 338, name: "异授眼科", category: "眼科"},
+            {num: 339, name: "眼科心法要诀", category: "眼科"},
+            {num: 340, name: "眼科阐微", category: "眼科"},
+            {num: 341, name: "喉舌备要秘旨", category: "眼科"},
+            {num: 342, name: "喉科指掌", category: "眼科"},
+            {num: 343, name: "喉科秘诀", category: "眼科"},
+            {num: 344, name: "喉科集腋", category: "眼科"},
+            {num: 345, name: "焦氏喉科枕秘", category: "眼科"},
+            {num: 346, name: "黄帝明堂灸经", category: "针灸"},
+            {num: 347, name: "经穴汇解", category: "针灸"},
+            {num: 348, name: "经络全书", category: "针灸"},
+            {num: 349, name: "经络考", category: "针灸"},
+            {num: 350, name: "经络汇编", category: "针灸"},
+            {num: 351, name: "包氏喉证家宝", category: "眼科"},
+            {num: 352, name: "炙膏肓腧穴法", category: "针灸"},
+            {num: 353, name: "凌门传授铜人指穴", category: "针灸"},
+            {num: 354, name: "厘正按摩要术", category: "眼科"},
+            {num: 355, name: "灵枢经脉翼", category: "针灸"},
+            {num: 356, name: "广嗣要语", category: "医论"},
+            {num: 357, name: "局方发挥", category: "医论"},
+            {num: 358, name: "西方子明堂灸经", category: "针灸"},
+            {num: 359, name: "友渔斋医话", category: "医论"},
+            {num: 360, name: "徐批叶天士晚年方案真本", category: "医案"},
+            {num: 361, name: "吴鞠通医案", category: "医案"},
+            {num: 362, name: "冷庐医话", category: "医论"},
+            {num: 363, name: "柳洲医话", category: "医论"},
+            {num: 364, name: "医贯", category: "医论"},
+            {num: 365, name: "古今医案按", category: "医案"},
+            {num: 366, name: "侣山堂类辩", category: "医论"},
+            {num: 367, name: "临证指南医案", category: "医案"},
+            {num: 368, name: "存存斋医话稿", category: "医论"},
+            {num: 369, name: "丹溪治法心要", category: "医论"},
+            {num: 370, name: "医经溯洄集", category: "医论"},
+            {num: 371, name: "叶天士医案精华", category: "医案"},
+            {num: 372, name: "一得集", category: "医论"},
+            {num: 373, name: "丁甘仁医案", category: "医案"},
+            {num: 374, name: "三家医案合刻", category: "医案"},
+            {num: 375, name: "上池杂说", category: "医论"},
+            {num: 376, name: "也是山人医案", category: "医案"},
+            {num: 377, name: "客尘医话", category: "医论"},
+            {num: 378, name: "王氏医案绎注", category: "医案"},
+            {num: 379, name: "市隐庐医学杂着", category: "医论"},
+            {num: 380, name: "未刻本叶氏医案", category: "医案"},
+            {num: 381, name: "先哲医话", category: "医论"},
+            {num: 382, name: "回春录", category: "医案"},
+            {num: 383, name: "何澹安医案", category: "医案"},
+            {num: 384, name: "吴医汇讲", category: "医论"},
+            {num: 385, name: "奇症汇", category: "医论"},
+            {num: 386, name: "知医必辨", category: "医论"},
+            {num: 387, name: "肯堂医论", category: "医论"},
+            {num: 388, name: "花韵楼医案", category: "医案"},
+            {num: 389, name: "证治心传", category: "医论"},
+            {num: 390, name: "辨证汇编", category: "医论"},
+            {num: 391, name: "眉寿堂方案选存", category: "医案"},
+            {num: 392, name: "研经言", category: "医论"},
+            {num: 393, name: "重订灵兰要览", category: "医论"},
+            {num: 394, name: "重庆堂随笔", category: "医论"},
+            {num: 395, name: "凌临灵方", category: "医案"},
+            {num: 396, name: "孙文垣医案", category: "医案"},
+            {num: 397, name: "塘医话", category: "医论"},
+            {num: 398, name: "马培之医案", category: "医案"},
+            {num: 399, name: "张聿青医案", category: "医案"},
+            {num: 400, name: "张畹香医案", category: "医案"},
+            {num: 401, name: "曹仁伯医案论", category: "医案"},
+            {num: 402, name: "热病衡正", category: "医论"},
+            {num: 403, name: "寓意草", category: "医论"},
+            {num: 404, name: "程杏轩医案", category: "医案"},
+            {num: 405, name: "慎疾刍言", category: "医论"},
+            {num: 406, name: "叶选医衡", category: "医论"},
+            {num: 407, name: "对山医话", category: "医论"},
+            {num: 408, name: "质疑录", category: "医论"},
+            {num: 409, name: "丛桂草堂医案", category: "医案"},
+            {num: 410, name: "归砚录", category: "医论"},
+            {num: 411, name: "医原", category: "医论"},
+            {num: 412, name: "医暇卮言", category: "医论"},
+            {num: 413, name: "医学课儿策", category: "医论"},
+            {num: 414, name: "医学读书记", category: "医论"},
+            {num: 415, name: "医医医", category: "医论"},
+            {num: 416, name: "续名医类案", category: "医案"},
+            {num: 417, name: "读医随笔", category: "医论"},
+            {num: 418, name: "医学源流论", category: "医论"},
+            {num: 419, name: "王旭高临证医案", category: "医案"},
+            {num: 420, name: "邵兰荪医案", category: "医案"},
+            {num: 421, name: "八十一难经", category: "内经"},
+            {num: 422, name: "内经博议", category: "内经"},
+            {num: 423, name: "素问六气玄珠密语", category: "内经"},
+            {num: 424, name: "医经读", category: "内经"},
+            {num: 425, name: "医经原旨", category: "内经"},
+            {num: 426, name: "素问玄机原病式", category: "内经"},
+            {num: 427, name: "类经", category: "内经"},
+            {num: 428, name: "类经图翼", category: "内经"},
+            {num: 429, name: "内经知要", category: "内经"},
+            {num: 430, name: "黄帝内经素问集注", category: "内经"},
+            {num: 431, name: "黄帝内经灵枢集注", category: "内经"},
+            {num: 432, name: "素问病机气宜保命集", category: "内经"},
+            {num: 433, name: "六因条辨", category: "医论"},
+            {num: 434, name: "素问灵枢类纂约注", category: "内经"},
+            {num: 435, name: "黄帝素问直解", category: "内经"},
+            {num: 436, name: "素问经注节解", category: "内经"},
+            {num: 437, name: "黄帝内经素问", category: "内经"},
+            {num: 438, name: "黄帝内经素问校义", category: "内经"},
+            {num: 439, name: "黄帝内经太素", category: "内经"},
+            {num: 440, name: "中西汇通医经精义", category: "内经"},
+            {num: 441, name: "内经评文", category: "内经"},
+            {num: 442, name: "内经药瀹", category: "内经"},
+            {num: 443, name: "医效秘传", category: "医论"},
+            {num: 444, name: "读素问钞", category: "内经"},
+            {num: 445, name: "灵素节注类编", category: "内经"},
+            {num: 446, name: "古本难经阐注", category: "内经"},
+            {num: 447, name: "难经正义", category: "内经"},
+            {num: 448, name: "素问识", category: "内经"},
+            {num: 449, name: "灵枢识", category: "内经"},
+            {num: 450, name: "难经经释", category: "内经"},
+            {num: 451, name: "黄帝内经素问遗篇", category: "内经"},
+            {num: 452, name: "素问要旨论", category: "内经"},
+            {num: 453, name: "黄帝素问宣明论方", category: "内经"},
+            {num: 454, name: "难经集注", category: "内经"},
+            {num: 455, name: "难经古义", category: "内经"},
+            {num: 456, name: "万氏秘传片玉心书", category: "儿科"},
+            {num: 457, name: "伤寒论", category: "伤寒"},
+            {num: 458, name: "伤寒捷诀", category: "伤寒"},
+            {num: 459, name: "伤寒总病论", category: "伤寒"},
+            {num: 460, name: "类证活人书", category: "伤寒"},
+            {num: 461, name: "注解伤寒论", category: "伤寒"},
+            {num: 462, name: "伤寒九十论", category: "伤寒"},
+            {num: 463, name: "伤寒百证歌", category: "伤寒"},
+            {num: 464, name: "伤寒发微论", category: "伤寒"},
+            {num: 465, name: "伤寒明理论", category: "伤寒"},
+            {num: 466, name: "仲景伤寒补亡论", category: "伤寒"},
+            {num: 467, name: "伤寒寻源", category: "伤寒"},
+            {num: 468, name: "伤寒直格", category: "伤寒"},
+            {num: 469, name: "伤寒标本心法类萃", category: "伤寒"},
+            {num: 470, name: "伤寒六书", category: "伤寒"},
+            {num: 471, name: "伤寒论条辨", category: "伤寒"},
+            {num: 472, name: "张卿子伤寒论", category: "伤寒"},
+            {num: 473, name: "伤寒证治准绳", category: "伤寒"},
+            {num: 474, name: "伤寒论注", category: "伤寒"},
+            {num: 475, name: "重订通俗伤寒论", category: "伤寒"},
+            {num: 476, name: "伤寒溯源集", category: "伤寒"},
+            {num: 477, name: "伤寒括要", category: "伤寒"},
+            {num: 478, name: "伤寒缵论", category: "伤寒"},
+            {num: 479, name: "伤寒贯珠集", category: "伤寒"},
+            {num: 480, name: "伤寒法祖", category: "伤寒"},
+            {num: 481, name: "伤寒大白", category: "伤寒"},
+            {num: 482, name: "伤寒悬解", category: "伤寒"},
+            {num: 483, name: "伤寒论类方", category: "伤寒"},
+            {num: 484, name: "伤寒论辩证广注", category: "伤寒"},
+            {num: 485, name: "伤寒论辑义", category: "伤寒"},
+            {num: 486, name: "伤寒医诀串解", category: "伤寒"},
+            {num: 487, name: "伤寒审证表", category: "伤寒"},
+            {num: 488, name: "伤寒补例", category: "伤寒"},
+            {num: 489, name: "敖氏伤寒金镜录", category: "伤寒"},
+            {num: 490, name: "伤寒舌鉴", category: "伤寒"},
+            {num: 491, name: "增订叶评伤暑全书", category: "医论"},
+            {num: 492, name: "伤寒论翼", category: "伤寒"},
+            {num: 493, name: "伤寒附翼", category: "伤寒"},
+            {num: 494, name: "伤寒指掌", category: "伤寒"},
+            {num: 495, name: "中寒论辩证广注", category: "伤寒"},
+            {num: 496, name: "河间伤寒心要", category: "伤寒"},
+            {num: 497, name: "刘河间伤寒医鉴", category: "伤寒"},
+            {num: 498, name: "金匮要略浅注", category: "金匮"},
+            {num: 499, name: "金匮要略方论", category: "金匮"},
+            {num: 500, name: "金匮要略心典", category: "金匮"},
+            {num: 501, name: "金匮玉函经二注", category: "金匮"},
+            {num: 502, name: "金匮玉函要略述义", category: "金匮"},
+            {num: 503, name: "脉诀", category: "医论"},
+            {num: 504, name: "脉经", category: "医论"},
+            {num: 505, name: "诊家枢要", category: "医论"},
+            {num: 506, name: "濒湖脉学", category: "医论"},
+            {num: 507, name: "诊家正眼", category: "医论"},
+            {num: 508, name: "三指禅", category: "医论"},
+            {num: 509, name: "湿热病篇", category: "医论"},
+            {num: 510, name: "形色外诊简摩", category: "医论"},
+            {num: 511, name: "金匮玉函要略辑义", category: "金匮"},
+            {num: 512, name: "脉理求真", category: "医论"},
+            {num: 513, name: "脉诀刊误", category: "医论"},
+            {num: 514, name: "脉诀汇辨", category: "医论"},
+            {num: 515, name: "高注金匮要略", category: "金匮"},
+            {num: 516, name: "临症验舌法", category: "医论"},
+            {num: 517, name: "望诊遵经", category: "医论"},
+            {num: 518, name: "诊宗三昧", category: "医论"},
+            {num: 519, name: "医灯续焰", category: "医论"},
+            {num: 520, name: "察病指南", category: "医论"},
+            {num: 521, name: "察舌辨症新法", category: "医论"},
+            {num: 522, name: "温疫论", category: "医论"},
+            {num: 523, name: "千金食治", category: "本草"},
+            {num: 524, name: "温热暑疫全书", category: "医论"},
+            {num: 525, name: "疫疹一得", category: "医论"},
+            {num: 526, name: "温病条辨", category: "医论"},
+            {num: 527, name: "温热逢源", category: "医论"},
+            {num: 528, name: "时病论", category: "医论"},
+            {num: 529, name: "温病指南", category: "医论"},
+            {num: 530, name: "女丹合编选注", category: "医论"},
+            {num: 531, name: "运气要诀", category: "医论"},
+            {num: 532, name: "备急千金要方", category: "方书"},
+            {num: 533, name: "食疗方", category: "方书"},
+            {num: 534, name: "心医集", category: "医论"},
+            {num: 535, name: "西池集", category: "医论"},
+            {num: 536, name: "性命要旨", category: "医论"},
+            {num: 537, name: "松峰说疫", category: "医论"},
+            {num: 538, name: "寿世传真", category: "医论"},
+            {num: 539, name: "陆地仙经", category: "医论"},
+            {num: 540, name: "宁坤秘笈", category: "女科"},
+            {num: 541, name: "温病正宗", category: "医论"},
+            {num: 542, name: "寿世保元", category: "医论"},
+            {num: 543, name: "温热经纬", category: "医论"},
+            {num: 544, name: "温热论", category: "医论"},
+            {num: 545, name: "达摩洗髓易筋经", category: "医论"},
+            {num: 546, name: "广瘟疫论", category: "医论"},
+            {num: 547, name: "养生秘旨", category: "医论"},
+            {num: 548, name: "养生导引法", category: "医论"},
+            {num: 549, name: "重订广温热论", category: "医论"},
+            {num: 550, name: "养生导引秘籍", category: "医论"},
+            {num: 551, name: "随息居重订霍乱论", category: "医论"},
+            {num: 552, name: "修昆仑证验", category: "医论"},
+            {num: 553, name: "寿世青编", category: "医论"},
+            {num: 554, name: "养生类要", category: "医论"},
+            {num: 555, name: "饮食须知", category: "医论"},
+            {num: 556, name: "瘴疟指南", category: "医论"},
+            {num: 557, name: "华氏中藏经", category: "医论"},
+            {num: 558, name: "三因极一病证方论", category: "医论"},
+            {num: 559, name: "扁鹊心书", category: "医论"},
+            {num: 560, name: "玉机微义", category: "医论"},
+            {num: 561, name: "明医指掌", category: "医论"},
+            {num: 562, name: "明医杂着", category: "医论"},
+            {num: 563, name: "此事难知", category: "医论"},
+            {num: 564, name: "金匮钩玄", category: "金匮"},
+            {num: 565, name: "卫生宝鉴", category: "医论"},
+            {num: 566, name: "校注医醇剩义", category: "医论"},
+            {num: 567, name: "脉因证治", category: "医论"},
+            {num: 568, name: "杂病治例", category: "医论"},
+            {num: 569, name: "秘传证治要诀及类方", category: "医论"},
+            {num: 570, name: "丹溪心法", category: "医论"},
+            {num: 571, name: "诸病源候论", category: "医论"},
+            {num: 572, name: "儒门事亲", category: "医论"},
+            {num: 573, name: "古今医鉴", category: "医论"},
+            {num: 574, name: "医说", category: "医论"},
+            {num: 575, name: "医宗金鉴", category: "医论"},
+            {num: 576, name: "医经国小", category: "医论"},
+            {num: 577, name: "医学入门", category: "医论"},
+            {num: 578, name: "医学启源", category: "医论"},
+            {num: 579, name: "医学纲目", category: "医论"},
+            {num: 580, name: "医垒元戎", category: "医论"},
+            {num: 581, name: "兰室秘藏", category: "医论"},
+            {num: 582, name: "韩氏医通", category: "医论"},
+            {num: 583, name: "医学正传", category: "医论"},
+            {num: 584, name: "医学衷中参西录", category: "医论"},
+            {num: 585, name: "卫济宝书", category: "医论"},
+            {num: 586, name: "三消论", category: "医论"},
+            {num: 587, name: "石室秘录", category: "医论"},
+            {num: 588, name: "丹溪手镜", category: "医论"},
+            {num: 589, name: "古今名医汇粹", category: "医论"},
+            {num: 590, name: "轩岐救正论", category: "医论"},
+            {num: 591, name: "痧胀玉衡", category: "医论"},
+            {num: 592, name: "医学三字经", category: "医论"},
+            {num: 593, name: "辨证录", category: "医论"},
+            {num: 594, name: "医学指归", category: "医论"},
+            {num: 595, name: "医学实在易", category: "医论"},
+            {num: 596, name: "医学摘粹", category: "医论"},
+            {num: 597, name: "冯氏锦囊秘录", category: "医论"},
+            {num: 598, name: "简明医彀", category: "医论"},
+            {num: 599, name: "医述", category: "医论"},
+            {num: 600, name: "辨症玉函", category: "医论"},
+            {num: 601, name: "医学心悟", category: "医论"},
+            {num: 602, name: "类证治裁", category: "医论"},
+            {num: 603, name: "医碥", category: "医论"},
+            {num: 604, name: "医学真传", category: "医论"},
+            {num: 605, name: "张氏医通", category: "医论"},
+            {num: 606, name: "中国医籍考", category: "医论"},
+            {num: 607, name: "脉象统类", category: "医论"},
+            {num: 608, name: "丹台玉案", category: "医论"},
+            {num: 609, name: "伤寒论纲目", category: "伤寒"},
+            {num: 610, name: "幼科释谜", category: "儿科"},
+            {num: 611, name: "妇科玉尺", category: "女科"},
+            {num: 612, name: "古今医彻", category: "医论"},
+            {num: 613, name: "药症忌宜", category: "本草"},
+            {num: 614, name: "脾胃论", category: "医论"},
+            {num: 615, name: "外经微言", category: "医论"},
+            {num: 616, name: "洗冤集录", category: "医论"},
+            {num: 617, name: "古今医统大全", category: "医论"},
+            {num: 618, name: "格致余论", category: "医论"},
+            {num: 619, name: "验方家秘", category: "方书"},
+            {num: 620, name: "推求师意", category: "医论"},
+            {num: 621, name: "褚氏遗书", category: "医论"},
+            {num: 622, name: "诸脉主病诗", category: "医论"},
+            {num: 623, name: "医旨绪余", category: "医论"},
+            {num: 624, name: "医宗己任编", category: "医论"},
+            {num: 625, name: "医学妙谛", category: "医论"},
+            {num: 626, name: "医学见能", category: "医论"},
+            {num: 627, name: "顾松园医镜", category: "医论"},
+            {num: 628, name: "医医小草", category: "医论"},
+            {num: 629, name: "眼科奇书", category: "眼科"},
+            {num: 630, name: "医学传灯", category: "医论"},
+            {num: 631, name: "医法圆通", category: "医论"},
+            {num: 632, name: "证治准绳·类方", category: "方书"},
+            {num: 633, name: "证治准绳·伤寒", category: "伤寒"},
+            {num: 634, name: "幼科种痘心法要旨", category: "儿科"},
+            {num: 635, name: "证治准绳·幼科", category: "儿科"},
+            {num: 636, name: "证治准绳·女科", category: "女科"},
+            {num: 637, name: "景岳全书", category: "医论"},
+            {num: 638, name: "订正仲景全书伤寒论注", category: "伤寒"},
+            {num: 639, name: "删补名医方论", category: "方书"},
+            {num: 640, name: "宜麟策", category: "女科"},
+            {num: 641, name: "医理真传", category: "医论"},
+            {num: 642, name: "订正仲景全书金匮要略注", category: "金匮"},
+            {num: 643, name: "证治准绳·疡医", category: "外科"},
+            {num: 644, name: "证治准绳·杂病", category: "医论"},
+            {num: 645, name: "证类本草", category: "本草"},
+            {num: 646, name: "伤寒心法要诀", category: "伤寒"},
+            {num: 647, name: "万病回春", category: "医论"},
+            {num: 648, name: "医津一筏", category: "医论"},
+            {num: 649, name: "续医说", category: "医论"},
+            {num: 650, name: "医脉摘要", category: "医论"},
+            {num: 651, name: "十二經補瀉溫涼引經藥歌", category: "本草"},
+            {num: 652, name: "三时伏气外感篇", category: "医论"},
+            {num: 653, name: "辅行诀脏腑用药法要", category: "医论"}
+        ];
+
+        let currentCategory = 'all';
+        let currentPage = 1;
+        let searchQuery = '';
+        const itemsPerPage = 30;
+
+        function getCategoryColor(category) {
+            const colors = {
+                '本草': '#8B4513',
+                '伤寒论': '#DC143C',
+                '金匮': '#B8860B',
+                '内经': '#2E8B57',
+                '方书': '#4169E1',
+                '女科': '#9932CC',
+                '儿科': '#FF6347',
+                '外科': '#20B2AA',
+                '针灸': '#FF8C00',
+                '眼科': '#9370DB',
+                '医论': '#708090',
+                '医案': '#CD853F'
+            };
+            return colors[category] || '#708090';
+        }
+
+        function getCategoryName(name) {
+            if (name.includes('本草') || name.includes('药')) return '本草';
+            if (name.includes('伤寒')) return '伤寒';
+            if (name.includes('金匮')) return '金匮';
+            if (name.includes('内经') || name.includes('素问') || name.includes('灵枢') || name.includes('难经')) return '内经';
+            if (name.includes('方') || name.includes('方书')) return '方书';
+            if (name.includes('女') || name.includes('产') || name.includes('胎') || name.includes('妇人') || name.includes('妇科')) return '女科';
+            if (name.includes('儿') || name.includes('幼') || name.includes('婴') || name.includes('痘')) return '儿科';
+            if (name.includes('外') || name.includes('疡') || name.includes('伤') || name.includes('疽') || name.includes('疮')) return '外科';
+            if (name.includes('针') || name.includes('灸') || name.includes('经穴') || name.includes('经络')) return '针灸';
+            if (name.includes('眼') || name.includes('目') || name.includes('喉') || name.includes('齿') || name.includes('口齿')) return '眼科';
+            if (name.includes('医案')) return '医案';
+            return '医论';
+        }
+
+        function getFileName(book) {
+            const num = String(book.num).padStart(3, '0');
+            return `${num}-${book.name}.txt`;
+        }
+
+        function filterBooks() {
+            let filtered = booksData;
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(book => {
+                    const cat = getCategoryName(book.name);
+                    return cat === currentCategory;
+                });
+            }
+            
+            if (searchQuery) {
+                filtered = filtered.filter(book => 
+                    book.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            
+            return filtered;
+        }
+
+        function renderBooks() {
+            const filtered = filterBooks();
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageBooks = filtered.slice(start, end);
+            
+            const grid = document.getElementById('booksGrid');
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <h3>未找到相关古籍</h3>
+                        <p>请尝试其他关键词</p>
+                    </div>
+                `;
+            } else {
+                grid.innerHTML = pageBooks.map(book => {
+                    const category = getCategoryName(book.name);
+                    const color = getCategoryColor(category);
+                    const fileName = getFileName(book);
+                    return `
+                        <div class="book-card" data-category="${category}">
+                            <div class="book-content">
+                                <span class="book-number" style="background: ${color}">${String(book.num).padStart(3, '0')}</span>
+                                <div class="book-title">${book.name}</div>
+                                <div class="book-category">${category}类</div>
+                                <div class="book-actions">
+                                    <a href="editor.html?file=${encodeURIComponent(fileName)}" class="btn btn-edit">✏️ 编辑</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            renderPagination(filtered.length);
+        }
+
+        function renderPagination(totalItems) {
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Prev
+            html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="goToPage(${currentPage - 1})">上一页</button>`;
+            
+            // Page numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<span class="page-btn">...</span>`;
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<span class="page-btn">...</span>`;
+                html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            // Next
+            html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="goToPage(${currentPage + 1})">下一页</button>`;
+            
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderBooks();
+            document.querySelector('.books-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            currentPage = 1;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderBooks();
+        }
+
+        function searchBooks() {
+            searchQuery = document.getElementById('searchInput').value.trim();
+            currentPage = 1;
+            renderBooks();
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBooks();
+            }
+        });
+
+        // Update total count
+        document.getElementById('totalBooks').textContent = booksData.length;
+
+        // Initial render
+        renderBooks();
+
+        // Check if running via file:// protocol
+        if (window.location.protocol === 'file:') {
+            document.getElementById('serverNotice').classList.add('show');
+        }
+
+        // ========== DateTime and Counter Functions ==========
+        
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format date
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${year}年${month}月${day}日`;
+            
+            // Format time with weekday
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeStr = `${weekday} ${hours}:${minutes}:${seconds}`;
+            
+            // Update display
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('currentTime').textContent = timeStr;
+        }
+
+        // Initialize and update visit counter
+        function initVisitCounter() {
+            // Get current count
+            let count = parseInt(localStorage.getItem('tcm_visit_count') || '0');
+            
+            // Increment count
+            count++;
+            
+            // Save new count
+            localStorage.setItem('tcm_visit_count', count.toString());
+            
+            // Display with animation
+            animateCounter(count);
+        }
+
+        // Animate counter number
+        function animateCounter(targetCount) {
+            const counterElement = document.getElementById('visitCounter');
+            const duration = 1000; // 1 second
+            const steps = 30;
+            const increment = targetCount / steps;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= targetCount) {
+                    current = targetCount;
+                    clearInterval(timer);
+                }
+                counterElement.textContent = Math.floor(current).toLocaleString();
+            }, duration / steps);
+        }
+
+        // Initialize datetime and counter
+        updateDateTime();
+        setInterval(updateDateTime, 1000); // Update every second
+        initVisitCounter();
+
+        // ========== Guestbook Functions ==========
+        
+        // Initialize guestbook with sample messages (first time only)
+        function initGuestbook() {
+            const messages = localStorage.getItem('tcm_guestbook');
+            if (!messages) {
+                const sampleMessages = [
+                    {
+                        id: Date.now() - 86400000 * 7,
+                        name: '中医学子',
+                        contact: 'tcm_student@example.com',
+                        message: '非常感谢提供这么好的资源！作为中医专业的学生，这个网站对我的学习帮助很大。希望能继续完善，加油！',
+                        timestamp: new Date(Date.now() - 86400000 * 7).toISOString()
+                    },
+                    {
+                        id: Date.now() - 86400000 * 5,
+                        name: '杏林春暖',
+                        contact: '',
+                        message: '古籍典藏，功德无量。传承中医文化，造福后世学人。',
+                        timestamp: new Date(Date.now() - 86400000 * 5).toISOString()
+                    },
+                    {
+                        id: Date.now() - 86400000 * 3,
+                        name: '本草爱好者',
+                        contact: 'wechat: bencao2024',
+                        message: '编辑器功能很实用！可以直接在线阅读和编辑古籍文本，太方便了。建议增加书签功能。',
+                        timestamp: new Date(Date.now() - 86400000 * 3).toISOString()
+                    },
+                    {
+                        id: Date.now() - 86400000,
+                        name: '岐黄传人',
+                        contact: '',
+                        message: '网站设计很有中国风，界面简洁优雅。希望能增加更多古籍，期待更新！',
+                        timestamp: new Date(Date.now() - 86400000).toISOString()
+                    }
+                ];
+                localStorage.setItem('tcm_guestbook', JSON.stringify(sampleMessages));
+            }
+        }
+
+        // Initialize on page load
+        initGuestbook();
+        
+        // Show guestbook modal
+        function showGuestbook() {
+            document.getElementById('guestbookModal').classList.add('show');
+            loadMessages();
+        }
+
+        // Close guestbook modal
+        function closeGuestbook() {
+            document.getElementById('guestbookModal').classList.remove('show');
+        }
+
+        // Submit message
+        function submitMessage(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('guestName').value.trim();
+            const contact = document.getElementById('guestContact').value.trim();
+            const message = document.getElementById('guestMessage').value.trim();
+            
+            if (!name || !message) {
+                alert('请填写姓名和留言内容');
+                return;
+            }
+            
+            // Create message object
+            const newMessage = {
+                id: Date.now(),
+                name: name,
+                contact: contact,
+                message: message,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing messages
+            let messages = JSON.parse(localStorage.getItem('tcm_guestbook') || '[]');
+            
+            // Add new message to beginning
+            messages.unshift(newMessage);
+            
+            // Save to localStorage
+            localStorage.setItem('tcm_guestbook', JSON.stringify(messages));
+            
+            // Clear form
+            document.getElementById('guestbookForm').reset();
+            
+            // Reload messages
+            loadMessages();
+            
+            // Show success message
+            alert('留言提交成功！感谢您的留言 🙏');
+        }
+
+        // Load and display messages
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('tcm_guestbook') || '[]');
+            const container = document.getElementById('messagesContainer');
+            
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div class="no-messages">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <p>暂无留言，快来留下您的足迹吧~</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = messages.map(msg => {
+                const date = new Date(msg.timestamp);
+                const timeStr = formatTime(date);
+                const initial = msg.name.charAt(0).toUpperCase();
+                
+                return `
+                    <div class="message-card" data-id="${msg.id}">
+                        <div class="message-header">
+                            <div class="message-author">
+                                <div class="message-avatar">${initial}</div>
+                                <div class="message-info">
+                                    <div class="message-name">${escapeHtml(msg.name)}</div>
+                                    ${msg.contact ? `<div class="message-contact">${escapeHtml(msg.contact)}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="message-time">${timeStr}</div>
+                        </div>
+                        <div class="message-content">${escapeHtml(msg.message)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Delete message (admin function - double click to delete)
+        document.addEventListener('dblclick', function(e) {
+            const card = e.target.closest('.message-card');
+            if (card && confirm('确定要删除这条留言吗？')) {
+                const id = parseInt(card.dataset.id);
+                let messages = JSON.parse(localStorage.getItem('tcm_guestbook') || '[]');
+                messages = messages.filter(msg => msg.id !== id);
+                localStorage.setItem('tcm_guestbook', JSON.stringify(messages));
+                loadMessages();
+            }
+        });
+
+        // Format timestamp
+        function formatTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return `${minutes}分钟前`;
+            if (hours < 24) return `${hours}小时前`;
+            if (days < 7) return `${days}天前`;
+            
+            return date.toLocaleDateString('zh-CN', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('guestbookModal');
+            if (e.target === modal) {
+                closeGuestbook();
+            }
+        });
+    </script>
+
+    <!-- Guestbook Modal -->
+    <div class="guestbook-modal" id="guestbookModal">
+        <div class="guestbook-container">
+            <div class="guestbook-header">
+                <h2>📝 留言板</h2>
+                <button class="guestbook-close" onclick="closeGuestbook()">&times;</button>
+            </div>
+            <div class="guestbook-body">
+                <!-- Message Form -->
+                <div class="guestbook-form">
+                    <h3>✍️ 写下您的留言</h3>
+                    <form id="guestbookForm" onsubmit="submitMessage(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="guestName">姓名 *</label>
+                                <input type="text" id="guestName" placeholder="请输入您的姓名" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="guestContact">联系方式（选填）</label>
+                                <input type="text" id="guestContact" placeholder="邮箱或微信">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestMessage">留言内容 *</label>
+                            <textarea id="guestMessage" placeholder="分享您的想法、建议或感受..." required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">提交留言</button>
+                    </form>
+                </div>
+
+                <!-- Messages List -->
+                <div class="messages-section">
+                    <h3>💬 访客留言</h3>
+                    <div id="messagesContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
