@@ -225,14 +225,50 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding-left: 20px;
-            border-left: 1px solid rgba(196, 167, 125, 0.3);
         }
 
-        .font-size-label {
-            font-size: 0.85rem;
+        .font-size-control.header-font-size {
+            padding: 8px 15px;
+            background: rgba(196, 167, 125, 0.15);
+            border-radius: 8px;
+            border: 1px solid rgba(196, 167, 125, 0.3);
+        }
+
+        .font-size-control.header-font-size .font-size-label {
             color: #C4A77D;
-            white-space: nowrap;
+        }
+
+        .font-size-control.header-font-size .font-size-value {
+            color: #FDF5E6;
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .font-size-control.header-font-size .font-size-slider {
+            width: 100px;
+        }
+
+        .font-size-control.header-font-size .font-size-reset {
+            background: rgba(196, 167, 125, 0.2);
+            border: 1px solid rgba(196, 167, 125, 0.5);
+            color: #C4A77D;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .font-size-control.header-font-size .font-size-reset:hover {
+            background: rgba(196, 167, 125, 0.3);
+            border-color: #C4A77D;
+            color: #FDF5E6;
+        }
+
+        /* Status bar font size control (hidden by default) */
+        .status-bar .font-size-control {
+            display: none;
         }
 
         .font-size-slider {
@@ -541,10 +577,23 @@
         @media (max-width: 768px) {
             .header {
                 padding: 15px;
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             .header h1 {
                 font-size: 1.2rem;
+            }
+
+            .font-size-control.header-font-size {
+                width: 100%;
+                margin-top: 10px;
+                justify-content: space-between;
+            }
+
+            .font-size-control.header-font-size .font-size-slider {
+                flex: 1;
+                min-width: 80px;
             }
 
             .toolbar {
@@ -561,7 +610,7 @@
             }
 
             .editor-container {
-                height: calc(100vh - 130px);
+                height: calc(100vh - 180px);
             }
 
             .status-bar {
@@ -574,19 +623,6 @@
                 flex-wrap: wrap;
                 gap: 10px;
                 width: 100%;
-            }
-
-            .font-size-control {
-                width: 100%;
-                padding-left: 0;
-                border-left: none;
-                border-top: 1px solid rgba(196, 167, 125, 0.3);
-                padding-top: 10px;
-            }
-
-            .font-size-slider {
-                flex: 1;
-                min-width: 100px;
             }
         }
     </style>
@@ -605,6 +641,21 @@
                 <h1>TXT 编辑器</h1>
                 <span class="subtitle">支持打开本地文件、编辑、保存</span>
             </div>
+        </div>
+        <!-- Font Size Control (Moved to Header) -->
+        <div class="font-size-control header-font-size">
+            <span class="font-size-label">字体大小:</span>
+            <input 
+                type="range" 
+                class="font-size-slider" 
+                id="fontSizeSlider" 
+                min="10" 
+                max="24" 
+                value="14" 
+                step="1"
+            >
+            <span class="font-size-value" id="fontSizeValue">14px</span>
+            <button class="font-size-reset" onclick="resetFontSize()" title="重置字体大小">重置</button>
         </div>
     </header>
 
@@ -714,22 +765,6 @@
             <div class="status-item">
                 <span>字符数:</span>
                 <span id="charCount">0</span>
-            </div>
-            
-            <!-- Font Size Control -->
-            <div class="font-size-control">
-                <span class="font-size-label">字体大小:</span>
-                <input 
-                    type="range" 
-                    class="font-size-slider" 
-                    id="fontSizeSlider" 
-                    min="10" 
-                    max="24" 
-                    value="14" 
-                    step="1"
-                >
-                <span class="font-size-value" id="fontSizeValue">14px</span>
-                <button class="font-size-reset" onclick="resetFontSize()" title="重置字体大小">重置</button>
             </div>
         </div>
         <div class="status-right">
