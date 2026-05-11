@@ -10,7 +10,7 @@
     <!-- 农历库 -->
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.2.0/lunar.min.js"></script>
     <!-- 不蒜子统计 -->
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <style>
         * {
             margin: 0;
@@ -2390,14 +2390,20 @@
         setInterval(updateDateTime, 1000); // Update every second
 
         // 不蒜子统计 - 加载完成后显示计数
+        let busuanziRetries = 0;
+        const BUSUANZI_MAX_RETRIES = 15;
         function checkBusuanziLoaded() {
             const pvSpan = document.getElementById('busuanzi_value_site_pv');
+            const container = document.getElementById('busuanzi_container_site_pv');
             const placeholder = document.getElementById('counterPlaceholder');
+            busuanziRetries++;
             if (pvSpan && parseInt(pvSpan.textContent) > 0) {
-                document.getElementById('busuanzi_container_site_pv').style.display = 'inline';
+                container.style.display = 'inline';
                 placeholder.style.display = 'none';
-            } else {
+            } else if (busuanziRetries < BUSUANZI_MAX_RETRIES) {
                 setTimeout(checkBusuanziLoaded, 800);
+            } else {
+                placeholder.textContent = '访问量：--';
             }
         }
         setTimeout(checkBusuanziLoaded, 1500);
